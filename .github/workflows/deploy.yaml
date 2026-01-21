@@ -1,0 +1,22 @@
+name: deploy
+
+on: 
+  workflow_dispatch
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Push
+        run: |
+          echo "${{ secrets.EC2_PRIVATE_KEY }}" >> secret-key.pem && chmod 400 secret-key.pem
+          scp -o StrictHostKeyChecking=no -i secret-key.pem ./hello.txt ubuntu@13.235.42.100:/home/ubuntu
+
+      - name: SSh and Deploy
+        run: |
+          ssh -o StrictHostKeyChecking=no -i private_key.pem ubuntu@13.235.42.100
+          pwd
+          echo
+          mkdir hello
